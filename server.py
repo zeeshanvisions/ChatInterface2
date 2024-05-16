@@ -1,6 +1,7 @@
 import streamlit as st
 import requests
 import re
+import tempfile
     
 def add_log(log: str):
     print(log)
@@ -34,6 +35,13 @@ def main():
     with st.sidebar:
         st.title('Chatbot Params')
         uploaded_file = st.file_uploader("Upload an article", type=("txt", ".doc", ".docx", ".ppt", ".pptx", ".pdf", ".csv", ".xlxs"))
+    
+        if st.button("Upload"):
+            if uploaded_file is not None:
+                
+                response = requests.post("http://127.0.0.1:5005/v1/upload",  files={"file": uploaded_file.read()})
+                st.toast("File uploaded")
+                
         st.subheader('Models and parameters')
         selected_model = st.sidebar.selectbox('Choose a chat model', ['Azure Open AI', 'Azure Chat Open AI', 'Azure Mistral Large'], key='selected_model')
         temperature = st.sidebar.slider('temperature', min_value=0.01, max_value=1.0, value=0.1, step=0.01)
@@ -55,7 +63,7 @@ def main():
         st.session_state.messages.append({"role": "user", "content": prompt})
         st.chat_message("user").write(prompt)
         try:
-            response = requests.post('https://5419-154-57-217-67.ngrok-free.app/question', json={'question': str(prompt)}, headers={'Content-Type': 'application/json'})
+            response = requests.post('http://127.0.0.1:5005/v1/question', json={'question': str(prompt)}, headers={'Content-Type': 'application/json'})
             json = response.json()
             last_answer = json["last_answer"]
             # last_answer = get_encoded_url_string(stringWithUrl=last_answer)
