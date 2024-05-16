@@ -30,7 +30,17 @@ def show_negative_case_toast():
 
 def main():
     st.set_page_config("Ask me any thing")
-    st.header("KMS 🤖")
+    
+    with st.sidebar:
+        st.title('Chatbot Params')
+        uploaded_file = st.file_uploader("Upload an article", type=("txt", ".doc", ".docx", ".ppt", ".pptx", ".pdf", ".csv", ".xlxs"))
+        st.subheader('Models and parameters')
+        selected_model = st.sidebar.selectbox('Choose a chat model', ['Azure Open AI', 'Azure Chat Open AI', 'Azure Mistral Large'], key='selected_model')
+        temperature = st.sidebar.slider('temperature', min_value=0.01, max_value=1.0, value=0.1, step=0.01)
+        top_p = st.sidebar.slider('top_p', min_value=0.01, max_value=1.0, value=0.9, step=0.01)
+        max_length = st.sidebar.slider('max_length', min_value=32, max_value=128, value=120, step=8)
+    
+    st.header("Chat Donna 🤖")
         
     if "conservation" not in st.session_state:
         st.session_state.conservation = list()
