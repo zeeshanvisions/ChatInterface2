@@ -63,7 +63,7 @@ def main():
         st.session_state.messages.append({"role": "user", "content": prompt})
         st.chat_message("user").write(prompt)
         try:
-            response = requests.post('https://f792-154-57-217-98.ngrok-free.app/v1/question', json={'question': str(prompt)}, headers={'Content-Type': 'application/json'})
+            response = requests.post(' https://1823-154-57-217-98.ngrok-free.app/v1/question', json={'question': str(prompt)}, headers={'Content-Type': 'application/json'})
             json = response.json()
             last_answer = json["answer"]
             # last_answer = get_encoded_url_string(stringWithUrl=last_answer)
