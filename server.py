@@ -43,7 +43,13 @@ def main():
                 st.toast("File uploaded")
                 
         st.subheader('Models and parameters')
-        selected_model = st.sidebar.selectbox('Choose a chat model', ['Azure Open AI', 'Azure Chat Open AI', 'Azure Mistral Large'], key='selected_model')
+        selected_model = st.sidebar.selectbox('Choose a chat model', ['Azure Open AI', 'Azure Mistral Large'], key='selected_model')
+        
+        if selected_model == 'Azure Mistral Large':
+            st.session_state.model = 'azure_mistral_large_chat'
+        else:
+            st.session_state.model = 'azure_open_ai_chat'
+        
         temperature = st.sidebar.slider('temperature', min_value=0.01, max_value=1.0, value=0.1, step=0.01)
         top_p = st.sidebar.slider('top_p', min_value=0.01, max_value=1.0, value=0.9, step=0.01)
         max_length = st.sidebar.slider('max_length', min_value=32, max_value=128, value=120, step=8)
@@ -52,6 +58,9 @@ def main():
         
     if "conservation" not in st.session_state:
         st.session_state.conservation = list()
+    
+    if "model" not in st.session_state:
+            st.session_state.model = "azure_open_ai_chat"
     
     if "messages" not in st.session_state:
         st.session_state["messages"] = [{"role": "assistant", "content": "How can I help you?"}]
@@ -63,7 +72,7 @@ def main():
         st.session_state.messages.append({"role": "user", "content": prompt})
         st.chat_message("user").write(prompt)
         try:
-            response = requests.post(' https://1823-154-57-217-98.ngrok-free.app/v1/question', json={'question': str(prompt)}, headers={'Content-Type': 'application/json'})
+            response = requests.post(' https://1823-154-57-217-98.ngrok-free.app/v1/question', json={'question': str(prompt), 'llm_type': st.session_state.model}, headers={'Content-Type': 'application/json'})
             json = response.json()
             last_answer = json["answer"]
             # last_answer = get_encoded_url_string(stringWithUrl=last_answer)
