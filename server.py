@@ -64,6 +64,9 @@ def main():
     
     if "messages" not in st.session_state:
         st.session_state["messages"] = [{"role": "assistant", "content": "How can I help you?"}]
+        
+    if "session_id" not in st.session_state:
+        st.session_state["session_id"] = None
     
     for msg in st.session_state.messages:
         st.chat_message(msg["role"]).write(msg["content"])
@@ -72,9 +75,14 @@ def main():
         st.session_state.messages.append({"role": "user", "content": prompt})
         st.chat_message("user").write(prompt)
         try:
-            response = requests.post(' https://1823-154-57-217-98.ngrok-free.app/v1/question', json={'question': str(prompt), 'llm_type': st.session_state.model}, headers={'Content-Type': 'application/json'})
+            body = {'question': str(prompt), 'llm_type': st.session_state.model}
+            if st.session_state.session_id is not None:
+                body["session_id"] = st.session_state.session_id
+                
+            response = requests.post(' https://1823-154-57-217-98.ngrok-free.app/v1/question', json=body, headers={'Content-Type': 'application/json'})
             json = response.json()
             last_answer = json["answer"]
+            st.session_state["session_id"] = json["session_id"]
             # last_answer = get_encoded_url_string(stringWithUrl=last_answer)
             st.session_state.messages.append({"role": "assistant", "content": last_answer})
             st.chat_message("assistant").write(last_answer)
