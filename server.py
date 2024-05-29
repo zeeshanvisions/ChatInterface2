@@ -27,7 +27,7 @@ def get_encoded_url_string(stringWithUrl: str):
     return newString
 
 def show_negative_case_toast():
-    st.toast('We have sent an email along with your query')
+    st.toast('We have sent an email along with your queries')
 
 def main():
     st.set_page_config("Ask me any thing")
