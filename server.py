@@ -79,7 +79,7 @@ def main():
             if st.session_state.session_id is not None:
                 body["session_id"] = st.session_state.session_id
                 
-            response = requests.post('https://4a0e-119-73-117-41.ngrok-free.app/v1/question', json=body, headers={'Content-Type': 'application/json'})
+            response = requests.post('https://856c-119-73-117-41.ngrok-free.app/v1/question', json=body, headers={'Content-Type': 'application/json'})
             json = response.json()
             last_answer = json["answer"]
             st.session_state["session_id"] = json["session_id"]
