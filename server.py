@@ -2,6 +2,14 @@ import streamlit as st
 import requests
 import re
 import tempfile
+
+class Reference:
+    def __init__(self, title: str, url: str):
+        self.title = title
+        self.url = url
+    
+    def to_string(self):
+        return f"[{self.title}]({self.url})"
     
 def add_log(log: str):
     print(log)
@@ -79,13 +87,22 @@ def main():
             if st.session_state.session_id is not None:
                 body["session_id"] = st.session_state.session_id
                 
-            response = requests.post('https://856c-119-73-117-41.ngrok-free.app/v1/question', json=body, headers={'Content-Type': 'application/json'})
+            response = requests.post('https://5715-119-73-117-41.ngrok-free.app/v1/question', json=body, headers={'Content-Type': 'application/json'})
             json = response.json()
-            last_answer = json["answer"]
+            response = json["current_response"]
+            last_answer = response["content"]
+            
+            references = list()
+            for reference in response["references"]:
+                references.append(Reference(reference["title"], reference["url"]))
+            references_string = "\n".join(ref.to_string() for ref in references)
+            
+            last_answer = last_answer + "\n\n **Sources:** " + references_string
+            
             st.session_state["session_id"] = json["session_id"]
-            # last_answer = get_encoded_url_string(stringWithUrl=last_answer)
             st.session_state.messages.append({"role": "assistant", "content": last_answer})
-            st.chat_message("assistant").write(last_answer)
+            with st.chat_message("assistant"):
+                st.markdown(last_answer)
         except:
             last_answer = "Server is offline"
             # last_answer = get_encoded_url_string(stringWithUrl=last_answer)
