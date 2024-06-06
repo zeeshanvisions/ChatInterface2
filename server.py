@@ -39,9 +39,15 @@ def show_negative_case_toast():
 
 def main():
     st.set_page_config("Ask me any thing")
-    
+                
     with st.sidebar:
         st.title('Chatbot Params')
+        on = st.toggle("Use Context Understanding", value=True)
+        if on:
+            st.session_state.use_context = True
+        else:
+            st.session_state.use_context = False
+    
         uploaded_file = st.file_uploader("Upload an article", type=("txt", ".doc", ".docx", ".ppt", ".pptx", ".pdf", ".csv", ".xlxs"))
     
         if st.button("Upload"):
@@ -76,6 +82,9 @@ def main():
     if "session_id" not in st.session_state:
         st.session_state["session_id"] = None
     
+    if "use_context" not in st.session_state:
+        st.session_state.use_context = True
+    
     for msg in st.session_state.messages:
         st.chat_message(msg["role"]).write(msg["content"])
     
@@ -83,7 +92,7 @@ def main():
         st.session_state.messages.append({"role": "user", "content": prompt})
         st.chat_message("user").write(prompt)
         try:
-            body = {'question': str(prompt), 'llm_type': st.session_state.model}
+            body = {'question': str(prompt), 'llm_type': st.session_state.model, 'use_context': st.session_state.use_context}
             if st.session_state.session_id is not None:
                 body["session_id"] = st.session_state.session_id
                 
@@ -91,13 +100,14 @@ def main():
             json = response.json()
             response = json["current_response"]
             last_answer = response["content"]
-            
+            show_references = response["show_references"]
             references = list()
-            for reference in response["references"]:
-                references.append(Reference(reference["title"], reference["url"]))
-            references_string = "\n".join(ref.to_string() for ref in references)
-            
-            last_answer = last_answer + "\n\n **Sources:** " + references_string
+            references_string = ""
+            if show_references:
+                for reference in response["references"]:
+                    references.append(Reference(reference["title"], reference["url"]))
+                references_string = "\n".join(ref.to_string() for ref in references)
+                last_answer = last_answer + "\n\n **Sources:** " + references_string
             
             st.session_state["session_id"] = json["session_id"]
             st.session_state.messages.append({"role": "assistant", "content": last_answer})
