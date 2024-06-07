@@ -106,7 +106,7 @@ def main():
             if show_references == True:
                 for reference in response["references"]:
                     references.append(Reference(reference["title"], reference["url"]))
-                references_string = "\n".join(ref.to_string() for ref in references)
+                references_string = "\n".join(f"{ref.to_string()}  " for ref in references)
                 last_answer = last_answer + "\n\n **Sources:** " + references_string
             
             st.session_state["session_id"] = json["session_id"]
