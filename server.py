@@ -103,7 +103,7 @@ def main():
             show_references = response["show_references"]
             references = list()
             references_string = ""
-            if show_references:
+            if show_references == True:
                 for reference in response["references"]:
                     references.append(Reference(reference["title"], reference["url"]))
                 references_string = "\n".join(ref.to_string() for ref in references)
