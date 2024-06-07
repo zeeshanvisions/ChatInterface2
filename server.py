@@ -98,9 +98,12 @@ def main():
                 
             response = requests.post('https://5715-119-73-117-41.ngrok-free.app/v1/question', json=body, headers={'Content-Type': 'application/json'})
             json = response.json()
+            
             response = json["current_response"]
             last_answer = response["content"]
             show_references = response["show_references"]
+            print(json)
+            print(f"===== > Show references: {show_references}")
             references = list()
             references_string = ""
             if show_references == True:
