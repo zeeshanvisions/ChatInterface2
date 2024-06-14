@@ -42,6 +42,10 @@ def main():
                 
     with st.sidebar:
         st.title('Chatbot Params')
+        
+        if st.button("Show Session Id"):
+            st.write(f'Session ID={st.session_state["session_id"]}')
+            
         on = st.toggle("Use Context Understanding", value=True)
         if on:
             st.session_state.use_context = True
