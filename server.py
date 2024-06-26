@@ -61,18 +61,20 @@ def main():
                 st.toast("File uploaded")
                 
         st.subheader('Models and parameters')
-        selected_model = st.sidebar.selectbox('Choose a chat model', ['Azure Open AI', 'Azure Mistral Large'], key='selected_model')
+        selected_model = st.sidebar.selectbox('Choose a chat model', ['Azure Open AI GPT 3.5', 'Azure Mistral Large', 'Azure Open AI GPT 4o'], key='selected_model')
         
         if selected_model == 'Azure Mistral Large':
             st.session_state.model = 'azure_mistral_large_chat'
+        elif selected_model == 'Azure Open AI GPT 4o':
+            st.session_state.model = "azure_open_ai_chat_gpt4o"
         else:
             st.session_state.model = 'azure_open_ai_chat'
         
-        temperature = st.sidebar.slider('temperature', min_value=0.01, max_value=1.0, value=0.1, step=0.01)
+        st.session_state.temperature = st.sidebar.slider('temperature', min_value=0.01, max_value=1.0, value=0.1, step=0.01)
         top_p = st.sidebar.slider('top_p', min_value=0.01, max_value=1.0, value=0.9, step=0.01)
         max_length = st.sidebar.slider('max_length', min_value=32, max_value=128, value=120, step=8)
     
-    st.header("Chat Donna 🤖 ( ⚠️ Under Maintenance ⚠️)")
+    st.header("Chat Donna 🤖 Under Maintenance")
         
     if "conservation" not in st.session_state:
         st.session_state.conservation = list()
@@ -88,6 +90,9 @@ def main():
     
     if "use_context" not in st.session_state:
         st.session_state.use_context = True
+        
+    if "temperature" not in st.session_state:
+        st.session_state.temperature = 0.1
     
     for msg in st.session_state.messages:
         st.chat_message(msg["role"]).write(msg["content"])
@@ -96,7 +101,7 @@ def main():
         st.session_state.messages.append({"role": "user", "content": prompt})
         st.chat_message("user").write(prompt)
         try:
-            body = {'question': str(prompt), 'llm_type': st.session_state.model, 'use_context': st.session_state.use_context}
+            body = {'question': str(prompt), 'llm_type': st.session_state.model, 'temperature': st.session_state.temperature, 'use_context': st.session_state.use_context}
             if st.session_state.session_id is not None:
                 body["session_id"] = st.session_state.session_id
                 
