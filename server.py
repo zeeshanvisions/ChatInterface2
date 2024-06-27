@@ -3,6 +3,8 @@ import requests
 import re
 import tempfile
 
+BASE_URL = "https://0257-119-73-121-121.ngrok-free.app/v1"
+
 class Reference:
     def __init__(self, title: str, url: str):
         self.title = title
@@ -36,6 +38,39 @@ def get_encoded_url_string(stringWithUrl: str):
 
 def show_negative_case_toast():
     st.toast('We have sent an email along with your queries')
+    
+def thumbs_up_pressed():
+    messages = st.session_state.messages
+    last_messages = messages[-2]
+    last_answer = ""
+    last_question = ""
+    type = "like"
+    session_id = st.session_state.session_id
+    for message in last_messages:
+        if message["role"] == "assistant":
+            last_answer = message["content"]
+        else:
+            last_question = message["content"]
+    
+    body = {'session_id': session_id, 'question': last_question, 'answer': last_answer, 'type': type}
+    response = requests.post(f'{BASE_URL}/feedback', json=body, headers={'Content-Type': 'application/json'})
+
+def thumbs_down_pressed():
+    messages = st.session_state.messages
+    last_messages = messages[-2]
+    last_answer = ""
+    last_question = ""
+    type = "dislike"
+    session_id = st.session_state.session_id
+    for message in last_messages:
+        if message["role"] == "assistant":
+            last_answer = message["content"]
+        else:
+            last_question = message["content"]
+    
+    body = {'session_id': session_id, 'question': last_question, 'answer': last_answer, 'type': type}
+    response = requests.post(f'{BASE_URL}/feedback', json=body, headers={'Content-Type': 'application/json'})
+    
 
 def main():
     st.set_page_config("Ask me any thing")
@@ -56,8 +91,7 @@ def main():
     
         if st.button("Upload"):
             if uploaded_file is not None:
-                
-                response = requests.post("http://127.0.0.1:5005/v1/upload",  files={"file": uploaded_file.read()})
+                response = requests.post(f"{BASE_URL}/upload",  files={"file": uploaded_file.read()})
                 st.toast("File uploaded")
                 
         st.subheader('Models and parameters')
@@ -105,14 +139,14 @@ def main():
             if st.session_state.session_id is not None:
                 body["session_id"] = st.session_state.session_id
                 
-            response = requests.post('https://0257-119-73-121-121.ngrok-free.app/v1/question', json=body, headers={'Content-Type': 'application/json'})
+            response = requests.post(f'{BASE_URL}/question', json=body, headers={'Content-Type': 'application/json'})
             json = response.json()
             
             response = json["current_response"]
             last_answer = response["content"]
             show_references = response["show_references"]
-            print(json)
-            print(f"===== > Show references: {show_references}")
+            # print(json)
+            # print(f"===== > Show references: {show_references}")
             references = list()
             references_string = ""
             if show_references == True:
@@ -125,6 +159,11 @@ def main():
             st.session_state.messages.append({"role": "assistant", "content": last_answer})
             with st.chat_message("assistant"):
                 st.markdown(last_answer)
+                col1,col2,col3,col4 = st.columns([3,3,0.5,0.5])
+                with col3:
+                        st.button(":thumbsup:", on_click=thumbs_up_pressed)
+                with col4:
+                        st.button(":thumbsdown:", on_click=thumbs_down_pressed)
         except:
             last_answer = "Server is offline"
             # last_answer = get_encoded_url_string(stringWithUrl=last_answer)
