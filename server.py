@@ -41,12 +41,11 @@ def show_negative_case_toast():
     
 def thumbs_up_pressed():
     messages = st.session_state.messages
-    last_messages = messages[-2]
     last_answer = ""
     last_question = ""
     type = "like"
     session_id = st.session_state.session_id
-    for message in last_messages:
+    for message in messages:
         if message["role"] == "assistant":
             last_answer = message["content"]
         else:
@@ -56,13 +55,13 @@ def thumbs_up_pressed():
     response = requests.post(f'{BASE_URL}/feedback', json=body, headers={'Content-Type': 'application/json'})
 
 def thumbs_down_pressed():
+    print("Thumbs down pressed")
     messages = st.session_state.messages
-    last_messages = messages[-2]
     last_answer = ""
     last_question = ""
     type = "dislike"
     session_id = st.session_state.session_id
-    for message in last_messages:
+    for message in messages:
         if message["role"] == "assistant":
             last_answer = message["content"]
         else:
