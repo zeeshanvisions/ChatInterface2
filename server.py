@@ -113,7 +113,7 @@ def main():
         st.session_state.conservation = list()
     
     if "model" not in st.session_state:
-            st.session_state.model = "azure_open_ai_chat"
+            st.session_state.model = "azure_mistral_large_chat"
     
     if "messages" not in st.session_state:
         st.session_state["messages"] = [{"role": "assistant", "content": "How can I help you?"}]
@@ -125,7 +125,7 @@ def main():
         st.session_state.use_context = True
         
     if "temperature" not in st.session_state:
-        st.session_state.temperature = 0.1
+        st.session_state.temperature = 0.5
     
     for msg in st.session_state.messages:
         st.chat_message(msg["role"]).write(msg["content"])
