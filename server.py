@@ -73,7 +73,17 @@ def thumbs_down_pressed():
 
 def main():
     st.set_page_config("Ask me any thing")
-                
+    st.markdown(
+            """
+        <style>
+            .st-emotion-cache-1c7y2kd {
+                flex-direction: row-reverse;
+                text-align: right;
+            }
+        </style>
+        """,
+            unsafe_allow_html=True,
+        )
     with st.sidebar:
         st.title('Chatbot Params')
         
@@ -113,10 +123,10 @@ def main():
         st.session_state.conservation = list()
     
     if "model" not in st.session_state:
-            st.session_state.model = "azure_mistral_large_chat"
+            st.session_state.model = "azure_open_ai_chat"
     
     if "messages" not in st.session_state:
-        st.session_state["messages"] = [{"role": "assistant", "content": "How can I help you?"}]
+        st.session_state["messages"] = [{"role": "assistant", "content": "Hi, How can I help you?"}]
         
     if "session_id" not in st.session_state:
         st.session_state["session_id"] = None
@@ -125,7 +135,7 @@ def main():
         st.session_state.use_context = True
         
     if "temperature" not in st.session_state:
-        st.session_state.temperature = 0.5
+        st.session_state.temperature = 0.3
     
     for msg in st.session_state.messages:
         st.chat_message(msg["role"]).write(msg["content"])
