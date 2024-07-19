@@ -158,11 +158,18 @@ def main():
             # print(f"===== > Show references: {show_references}")
             references = list()
             references_string = ""
-            if show_references == True:
-                for reference in response["references"]:
-                    references.append(Reference(reference["title"], reference["url"]))
-                references_string = "\n".join(f"{ref.to_string()}  " for ref in references)
-                last_answer = last_answer + "\n\n **Sources:** " + references_string
+            # For multiple references
+            # if show_references == True:
+            #     for reference in response["references"]:
+            #         references.append(Reference(reference["title"], reference["url"]))
+            #     references_string = "\n".join(f"{ref.to_string()}  " for ref in references)
+            #     last_answer = last_answer + "\n\n **Sources:** " + references_string
+            
+            if response["references"]:
+                first_reference = response["references"][0]
+                references.append(Reference(first_reference["title"], first_reference["url"]))
+                references_string = references[0].to_string()
+                last_answer = last_answer + "\n\n **Source:** " + references_string
             
             st.session_state["session_id"] = json["session_id"]
             st.session_state.messages.append({"role": "assistant", "content": last_answer})
