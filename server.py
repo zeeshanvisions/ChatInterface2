@@ -171,6 +171,8 @@ def main():
                 references_string = references[0].to_string()
                 last_answer = last_answer + "\n\n **Source:** " + references_string
             
+            last_answer.replace("$", "\$")
+            
             st.session_state["session_id"] = json["session_id"]
             st.session_state.messages.append({"role": "assistant", "content": last_answer})
             with st.chat_message("assistant"):
