@@ -3,7 +3,7 @@ import requests
 import re
 import tempfile
 
-BASE_URL = "https://0257-119-73-121-121.ngrok-free.app/v1"
+BASE_URL = "https://8b2f-154-57-217-102.ngrok-free.app/v1"
 
 class Reference:
     def __init__(self, title: str, url: str):
