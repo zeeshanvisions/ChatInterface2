@@ -165,11 +165,11 @@ def main():
             #     references_string = "\n".join(f"{ref.to_string()}  " for ref in references)
             #     last_answer = last_answer + "\n\n **Sources:** " + references_string
             
-            if response["references"]:
-                first_reference = response["references"][0]
-                references.append(Reference(first_reference["title"], first_reference["url"]))
-                references_string = references[0].to_string()
-                last_answer = last_answer + "\n\n **Source:** " + references_string
+            # if response["references"]:
+            #     first_reference = response["references"][0]
+            #     references.append(Reference(first_reference["title"], first_reference["url"]))
+            #     references_string = references[0].to_string()
+            #     last_answer = last_answer + "\n\n **Source:** " + references_string
             
             last_answer = last_answer.replace('$', '\$')
             
